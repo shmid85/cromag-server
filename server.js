@@ -56,7 +56,7 @@ mongoose
     })
     .catch(() => log(chalk.red('DB connection error!')))
 
-app.listen(PORT, '192.168.2.142', () => {
+app.listen(PORT, '0.0.0.0', () => {
     log(chalk.green(`CROMAG Server is started on ${PORT} port`))
     fs.appendFile(
         'server.log',
