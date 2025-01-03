@@ -30,7 +30,7 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^3.1.9"
   },
   "optionalDependencies": {
     "utf-8-validate": "^6.0.3"
