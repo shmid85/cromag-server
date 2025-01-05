@@ -3,15 +3,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const fs = require('fs')
-const logger = require('./logger/logger')
+const { logger, logToFile, log, startLogCleaning } = require('./logger/logger')
 const config = require('config')
-// const { getDb, connectToDb } = require('./db/db')
 const mongoose = require('mongoose')
 const startWss = require('./wss/wss')
 
 const app = express()
-const PORT = config.get('port')
-const log = console.log
+const PORT = process.env.port || config.get('port')
 //TODO: Make it configurable
 const URL = 'mongodb://localhost:27017/cromag'
 
@@ -28,41 +26,23 @@ app.use(logger);
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/common', require('./routes/common.routes'))
 
-// let db
-// connectToDb(err => {
-//     if(err) {
-//         log(chalk.green(`Db connections error:  ${err}`))
-//         return;
-//     }
-
-//     db = getDb()
-//     app.listen(PORT, '192.168.2.142', () => {
-//         log(chalk.green(`CROMAG Server is started on ${PORT} port`))
-//         fs.appendFile(
-//             'server.log',
-//             `Server is started on ${PORT} port at ${(new Date()).toLocaleString()}\n`,
-//             (error) => {
-//                 if(error) throw error
-//             }
-//         )
-//     })
-// })
+startLogCleaning()
 
 mongoose
     .connect(URL)
     .then(() => {
         startWss()
         log(chalk.green('DB is connected!'))
+        logToFile(`🛩 Server is started on ${PORT} port in ${process.env.NODE_ENV} mode`);
     })
-    .catch(() => log(chalk.red('DB connection error!')))
+    .catch(error => { 
+            log(chalk.red('DB connection error!'))
+            logToFile(`DB connection error ${JSON.stringify(error)}`)
+        } 
+    )
 
 app.listen(PORT, '0.0.0.0', () => {
-    log(chalk.green(`🛩 CROMAG Server is started on ${PORT} port`))
-    fs.appendFile(
-        'server.log',
-        `🛩 Server is started on ${PORT} port at ${(new Date()).toLocaleString()}\n`,
-        (error) => {
-            if(error) throw error
-        }
-    )
+    const today = new Date().toLocaleDateString();
+    log(chalk.green(`🛩 CROMAG Server is started on ${PORT} port in ${process.env.NODE_ENV} mode`))
+    logToFile(`🛩 Server is started on ${PORT} port in ${process.env.NODE_ENV} mode`);
 })   

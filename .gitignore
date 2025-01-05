@@ -43,4 +43,4 @@ testem.log
 Thumbs.db
 
 #log
-/server.log
+server*.log

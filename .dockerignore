@@ -2,6 +2,6 @@
 .idea
 .vscode
 /node_modules
-server.log
+server*.log
 package-lock.json
 Dokerfile

@@ -1,13 +1,21 @@
 const chalk = require('chalk')
+const config = require('config')
 const { WebSocketServer }  = require('ws')
 const WsMessagesEnum = require('../routes/ws-messages.enum')
 const Message = require('../models/Message')
+const { logToFile, log } = require('../logger/logger')
+const PORT = process.env.port || config.get('wssPort')
+
 const startWss = () => {
-    const wss = new WebSocketServer({port: 8080})
+    const wss = new WebSocketServer({port: PORT})
     wss.broadcast = msg => wss.clients.forEach(client => client.send(msg))
     
     wss.on('connection', function connection(ws) {
-        ws.on('error', console.error)
+        logToFile(`WSS started on port ${PORT}`)
+        ws.on('error', error => { 
+            log(chalk.red(JSON.stringify(error)))
+            logToFile(`WSS run error ${JSON.stringify(error)}`)
+        })
       
         ws.on('message', event => {  
             const message = JSON.parse(event)
@@ -25,7 +33,7 @@ const startWss = () => {
                 case WsMessagesEnum.UPDATE_MESSAGE: 
                     return updateMessage(ws, data) 
                 default:
-                    //TODO ERROR            
+                    logToFile(`Unknown message type ${type}}`)
             }
         });
       });
@@ -41,8 +49,9 @@ const startWss = () => {
                     })
                 )  
             })
-            .catch(e => {
-                console.log(chalk.red(JSON.stringify(e)))
+            .catch(error => {
+                log(chalk.red(JSON.stringify(e)))
+                logToFile(`Sending messages error ${JSON.stringify(error)}`)
                 ws.send(
                     JSON.stringify({
                         type: WsMessagesEnum.ERROR,
@@ -58,7 +67,6 @@ const startWss = () => {
         Message
             .findByIdAndDelete(_id)
             .then(res => {
-                console.log(res)
                 wss.broadcast(
                     JSON.stringify({
                         type: WsMessagesEnum.DELETE_MESSAGE,
@@ -66,8 +74,9 @@ const startWss = () => {
                     })
                 )
             })
-            .catch(e => {
-                console.log(chalk.red(JSON.stringify(e)))
+            .catch(error => {
+                log(chalk.red(JSON.stringify(e)))
+                logToFile(`Message with id ${_id} was not found or error has occupied ${error}`)
                 ws.send(
                     JSON.stringify({
                         type: WsMessagesEnum.ERROR,

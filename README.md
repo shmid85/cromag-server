@@ -1,9 +1,16 @@
 🛩 cromag-server is a server for cromag ui chat(a pet project)
 
-# Start a development mode
+# Start a development mode (linux and mac)
 npm run start-dev
 
-# Start a production mode
+# Start a production mode (linux and mac)
 npm run start
 
-The server REST listens 5000 port,  web soket listens 8080 port
+# Start a development mode (windows)
+npm run start-win
+
+# Start a production mode (windows)
+npm run start-dev-win
+
+The server REST listens on 5000 port if environment variable PORT was not set.
+The web socket server listens on 8080 port if environment variable WSS_PORT was not set.

@@ -1,5 +1,6 @@
 {
     "port": 5000,
+    "wssPort": 5001,
     "version": "0.0.1",
-    "jsonSecretKey": "my-secret-key"
+    "privateKey": "my-secret-key"
 }

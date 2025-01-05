@@ -1,18 +1,21 @@
+const registerValidators = require('../validators/register.validators')
+const loginValidators = require('../validators/login.validators')
+const getPrivateKey = require('./get-private-key')
 const { Router } = require('express')
 const bcrypt = require('bcrypt')
 const { validationResult } = require('express-validator')
 const router = Router()
-const registerValidators = require('../validators/register.validators')
-const loginValidators = require('../validators/login.validators')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const { logToFile } = require('../logger/logger')
+const PRIVATE_KEY = getPrivateKey()
 
 router.post('/register', registerValidators, async (request, response) => {
     try {
         const errors = validationResult(request);
 
         if(!errors.isEmpty()) {
-            response.status(400).json({
+            return response.status(400).json({
                 errors: errors.array(),
                 message: 'Incorrect data during registration'
             })
@@ -40,30 +43,35 @@ router.get('/login', loginValidators, async (request, response) => {
         const errors = validationResult(request);
 
         if(!errors.isEmpty()) {
-            response.status(400).json({
+            return response.status(400).json({
                 errors,
                 message: 'Incorrect data during login'
+            })
+        }
+
+        if(!PRIVATE_KEY) {
+            logToFile('Private key was not passed. Can\'t login');
+            return response.status(400).json({
+                message: 'Something went wrong'
             })
         }
 
         const { email, password } = request.body
         const user = await User.fincOne({ email })
 
-        console.log(user)
-
         if(!user) {
-            response.status(400).json({message: 'User not found'})
+            return response.status(400).json({message: 'User not found'})
         }
         
         const isMatch = await bcrypt.compare(password, user.password)
 
         if(!isMatch) {
-            response.status(400).json({message: 'Wrong password'})
+            return response.status(400).json({message: 'Wrong password'})
         }
  
         const token = jwt.sign(
             { userId: user.id },
-            config.get("jsonSecretKey"),
+            PRIVATE_KEY,
             { expiresIn: '1h'}
         )
 
