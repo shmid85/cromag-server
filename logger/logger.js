@@ -20,7 +20,7 @@ function logToFile(message) {
     
     fs.appendFile(
         `./log/server-${today}.log`,
-        `${new Date().toLocaleString()} ${message}\n`, 
+        `${new Date().toLocaleString('RU')} ${message}\n`, 
         error => { if(error) throw error }
     );
 }
