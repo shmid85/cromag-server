@@ -48,5 +48,5 @@ module.exports = {
     logger, 
     logToFile,
     log,
-    startCleaning
+    startLogCleaning
 }
