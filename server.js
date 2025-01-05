@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const startWss = require('./wss/wss')
 
 const app = express()
-const PORT = process.env.port || config.get('port')
+const PORT = process.env.PORT || config.get('port')
 //TODO: Make it configurable
 const URL = 'mongodb://localhost:27017/cromag'
 

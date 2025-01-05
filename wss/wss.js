@@ -4,13 +4,14 @@ const { WebSocketServer }  = require('ws')
 const WsMessagesEnum = require('../routes/ws-messages.enum')
 const Message = require('../models/Message')
 const { logToFile, log } = require('../logger/logger')
-const PORT = process.env.port || config.get('wssPort')
+const PORT = process.env.WSS_PORT || config.get('wssPort')
 
 const startWss = () => {
     const wss = new WebSocketServer({port: PORT})
     wss.broadcast = msg => wss.clients.forEach(client => client.send(msg))
     
     wss.on('connection', function connection(ws) {
+        log(chalk.green(`WSS started on port ${PORT}`))
         logToFile(`WSS started on port ${PORT}`)
         ws.on('error', error => { 
             log(chalk.red(JSON.stringify(error)))

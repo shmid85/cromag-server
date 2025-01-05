@@ -16,7 +16,7 @@ function logger(request, response, next) {
 }
 
 function logToFile(message) {
-    const today = new Date().toLocaleDateString();
+    const today = new Date().toLocaleDateString('RU');
     
     fs.appendFile(
         `./log/server-${today}.log`,
