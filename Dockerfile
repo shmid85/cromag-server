@@ -12,6 +12,6 @@ EXPOSE 5000
 EXPOSE 5001
 
 LABEL authors="Martynyuk Aleksandr"
-VOLUME [ "/app/logs" ]
+VOLUME [ "/app/log" ]
 
 CMD ["npm", "run", "start"]
