@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
+EXPOSE 5000
+EXPOSE 8080
+
 LABEL authors="Martynyuk Aleksandr"
 
 CMD ["npm", "run", "start"]
