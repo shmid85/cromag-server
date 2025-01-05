@@ -57,10 +57,10 @@ mongoose
     .catch(() => log(chalk.red('DB connection error!')))
 
 app.listen(PORT, '0.0.0.0', () => {
-    log(chalk.green(`CROMAG Server is started on ${PORT} port`))
+    log(chalk.green(`🛩 CROMAG Server is started on ${PORT} port`))
     fs.appendFile(
         'server.log',
-        `Server is started on ${PORT} port at ${(new Date()).toLocaleString()}\n`,
+        `🛩 Server is started on ${PORT} port at ${(new Date()).toLocaleString()}\n`,
         (error) => {
             if(error) throw error
         }
