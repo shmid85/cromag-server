@@ -1,0 +1,7 @@
+.git
+.idea
+.vscode
+/node_modules
+server.log
+package-lock.json
+Dokerfile
